@@ -24,8 +24,8 @@ function LoginPage() {
 
   const handleSubmit = async(e) => {
     try {
-      const {email, password} = input
       e.preventDefault();
+      const {email, password} = input
       setError("");
 
       if (!input.email || !input.password) {
@@ -42,11 +42,12 @@ function LoginPage() {
       }
 
       let data = await login(input)
+      console.log(data);
 
       hdlClearInput();
-      setShowSuccess(true); // Show success message
+      setShowSuccess(true); 
       
-      // Wait 2 seconds before redirecting
+      
       setTimeout(() => {
         navigate('/home');
       }, 1000);
