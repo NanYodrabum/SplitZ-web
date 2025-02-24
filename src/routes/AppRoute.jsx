@@ -1,25 +1,26 @@
 import React from 'react'
-import { Routes } from 'react-router'
+import { Routes, Route } from 'react-router'
 import Layout from '../components/layout/Layout'
 import HomePage from '../pages/HomePage'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/Register'
 import BillsPage from '../pages/BillsPage'
 import PaymentsPage from '../pages/PaymentsPage'
+import LandingPage from "../pages/LandingPage"
+
 
 
 function AppRoute() {
   return (
     <Routes>
-    <Routes path="/" element={<Layout />}>
-      <Routes index element={<HomePage />} />
-      <Routes path="/login" element={<LoginPage />} />
-      <Routes path="/register" element={<RegisterPage />} />
-      <Routes path="/bills" element={<BillsPage />} />
-      <Routes path="/payments" element={<PaymentsPage />} />
+      <Route path="/" element={<LandingPage/>} />
+      <Route path="/home" element={<HomePage/>} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/bills" element={<BillsPage />} />
+      <Route path="/payments" element={<PaymentsPage />} />
     </Routes>
-  </Routes>
-  )
+  );
 }
 
-export default AppRoute
+export default AppRoute;
