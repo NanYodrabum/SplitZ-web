@@ -8,7 +8,8 @@ const useUserStore = create(persist((set,get)=>({
     token : "",
     login : async (input)=>{
         const rs = await axios.post('http://localhost:8800/auth/login', input)
-        set({token: rs.data.token, user: rs.data.user})
+        console.log(rs);
+        set({token: rs.data.token, user: rs.data.payload})
         return rs.data
     },
     logout: () => set({token: "", user: null})

@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.2.2",
+    "@dicebear/core": "^9.2.2",
     "@tailwindcss/vite": "^4.0.8",
     "axios": "^1.7.9",
     "lucide-react": "^0.475.0",
