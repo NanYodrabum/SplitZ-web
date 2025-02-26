@@ -44,7 +44,7 @@ function HomePage() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('-1');
   };
 
   return (

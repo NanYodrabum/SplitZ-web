@@ -17,120 +17,14 @@ function BillDetail() {
       try {
         setLoading(true);
         // This would be replaced with an actual API call
-        // const response = await axios.get(`http://localhost:8800/bills/${billId}`, {
-        //   headers: { Authorization: `Bearer ${token}` }
-        // });
+        const response = await axios.get(`http://localhost:8800/bills/${billId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         
         // For demonstration purposes, we'll use mock data
         // In a real application, you would uncomment the axios call and use the response data
-        const mockBill = {
-          id: billId,
-          name: "Dinner at Italian Restaurant",
-          description: "Team dinner after project completion",
-          category: "dining",
-          date: "2025-02-24",
-          totalAmount: 156.75,
-          creator: {
-            id: 1,
-            name: "Jane Doe"
-          },
-          participants: [
-            { id: 1, name: "Jane Doe", isCreator: true },
-            { id: 2, name: "John Smith", isCreator: false },
-            { id: 3, name: "Mike Johnson", isCreator: false }
-          ],
-          items: [
-            {
-              id: 1,
-              name: "Margherita Pizza",
-              basePrice: 12.99,
-              taxPercent: 7,
-              taxAmount: 0.91,
-              servicePercent: 10,
-              serviceAmount: 1.30,
-              totalAmount: 15.20,
-              splits: [
-                { participantId: 1, shareAmount: 5.07, paymentStatus: "completed" },
-                { participantId: 2, shareAmount: 5.07, paymentStatus: "pending" },
-                { participantId: 3, shareAmount: 5.06, paymentStatus: "pending" }
-              ]
-            },
-            {
-              id: 2,
-              name: "Pasta Carbonara",
-              basePrice: 16.50,
-              taxPercent: 7,
-              taxAmount: 1.16,
-              servicePercent: 10,
-              serviceAmount: 1.65,
-              totalAmount: 19.31,
-              splits: [
-                { participantId: 1, shareAmount: 19.31, paymentStatus: "completed" }
-              ]
-            },
-            {
-              id: 3,
-              name: "Tiramisu",
-              basePrice: 8.75,
-              taxPercent: 7,
-              taxAmount: 0.61,
-              servicePercent: 10,
-              serviceAmount: 0.88,
-              totalAmount: 10.24,
-              splits: [
-                { participantId: 2, shareAmount: 5.12, paymentStatus: "pending" },
-                { participantId: 3, shareAmount: 5.12, paymentStatus: "pending" }
-              ]
-            },
-            {
-              id: 4,
-              name: "Bottle of Wine",
-              basePrice: 32.00,
-              taxPercent: 7,
-              taxAmount: 2.24,
-              servicePercent: 10,
-              serviceAmount: 3.20,
-              totalAmount: 37.44,
-              splits: [
-                { participantId: 1, shareAmount: 12.48, paymentStatus: "completed" },
-                { participantId: 2, shareAmount: 12.48, paymentStatus: "pending" },
-                { participantId: 3, shareAmount: 12.48, paymentStatus: "pending" }
-              ]
-            },
-            {
-              id: 5,
-              name: "Appetizer Platter",
-              basePrice: 24.50,
-              taxPercent: 7,
-              taxAmount: 1.72,
-              servicePercent: 10,
-              serviceAmount: 2.45,
-              totalAmount: 28.67,
-              splits: [
-                { participantId: 1, shareAmount: 9.56, paymentStatus: "completed" },
-                { participantId: 2, shareAmount: 9.56, paymentStatus: "pending" },
-                { participantId: 3, shareAmount: 9.55, paymentStatus: "pending" }
-              ]
-            },
-            {
-              id: 6,
-              name: "Mineral Water",
-              basePrice: 4.50,
-              taxPercent: 7,
-              taxAmount: 0.32,
-              servicePercent: 10,
-              serviceAmount: 0.45,
-              totalAmount: 5.27,
-              splits: [
-                { participantId: 1, shareAmount: 1.76, paymentStatus: "completed" },
-                { participantId: 2, shareAmount: 1.76, paymentStatus: "pending" },
-                { participantId: 3, shareAmount: 1.75, paymentStatus: "pending" }
-              ]
-            }
-          ]
-        };
-
-        setBill(mockBill);
+        
+        setBill(response);
         setLoading(false);
       } catch (err) {
         setError('Failed to load bill details. Please try again.');
@@ -142,7 +36,7 @@ function BillDetail() {
   }, [billId, token]);
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate("/");
   };
 
   const calculateParticipantOwes = (participantId) => {
