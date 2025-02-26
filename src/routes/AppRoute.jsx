@@ -1,19 +1,30 @@
-import React from 'react'
-import { Routes, Route } from 'react-router'
-import HomePage from '../pages/HomePage'
-import LoginPage from '../pages/LoginPage'
-import RegisterPage from '../pages/Register'
-import LandingPage from "../pages/LandingPage"
-
-
+import React from 'react';
+import { Routes, Route } from 'react-router';
+import Layout from '../components/Layout';
+import HomeContent from '../components/Home';
+import Bill from '../components/Bill';
+import Payment from '../components/Payment';
+import BillDetail from '../components/BillDetail';
+import Account from '../components/Account';
+import LandingPage from "../pages/LandingPage";
+import LoginPage from '../pages/LoginPage';
+import RegisterPage from '../pages/Register';
 
 function AppRoute() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage/>} />
-      <Route path="/home" element={<HomePage/>} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      
+      {/* Layout with nested routes for authenticated pages */}
+      <Route path="/dashboard" element={<Layout />}>
+        <Route index element={<HomeContent />} />
+        <Route path="bills" element={<Bill />} />
+        <Route path="billdetail" element={<BillDetail />} />
+        <Route path="payments" element={<Payment />} />
+        <Route path="account" element={<Account />} />
+      </Route>
     </Routes>
   );
 }

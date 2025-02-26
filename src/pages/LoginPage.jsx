@@ -49,7 +49,7 @@ function LoginPage() {
       
       
       setTimeout(() => {
-        navigate('/home');
+        navigate('/dashboard');
       }, 1000);
 
     } catch (err) {

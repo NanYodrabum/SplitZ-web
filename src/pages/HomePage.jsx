@@ -1,122 +1,146 @@
-import React, { useState } from 'react';
-import { Home, Receipt, CreditCard, User, Menu, X, LogOut } from 'lucide-react';
-import useUserStore from '../stores/userStore';
-import HomeContent from '../components/Home';
-import Bill from '../components/Bill';
-import Payment from '../components/Payment';
-import Account from '../components/Account';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import BillDetail from '../components/BillDetail';
+import useUserStore from '../stores/userStore';
 
 function HomePage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [activePage, setActivePage] = useState('Home');
-  const user = useUserStore((state) => state.user);
-  const logout = useUserStore((state) => state.logout);
   const navigate = useNavigate();
-  const navItems = [
-    { icon: Home, label: 'Home', active: true },
-    { icon: Receipt, label: 'Bills', active: false },
-    { icon: Receipt, label: 'BillDetail', active: false},
-    { icon: CreditCard, label: 'Payments', active: false }
-  ];
+  const user = useUserStore((state) => state.user);
 
-  const handleNavItemClick = (label) => {
-    setActivePage(label);
-  };
-
-  const renderPageContent = () => {
-    switch (activePage) {
-      case 'Home':
-        return <HomeContent />;
-      case 'Bills':
-        return <Bill />;
-      case 'Payments':
-        return <Payment />;
-      case 'Account':
-        return <Account />;
-      case 'BillDetail':
-        return <BillDetail />
-      default:
-        return <HomeContent />;
+  useEffect(() => {
+    // If user is logged in, redirect to dashboard
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      // If not logged in, redirect to login
+      navigate('/login');
     }
-  };
+  }, [user, navigate]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('-1');
-  };
-
-  return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar Toggle Button for Mobile */}
-      <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      >
-        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* Sidebar */}
-      <div
-        className={`fixed lg:static inset-y-0 left-0 z-40 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white border-r border-gray-200 flex flex-col`}
-      >
-        {/* Logo */}
-        <div className="p-6 border-b">
-          <h1 className="text-xl font-bold text-purple-600">SplitZ</h1>
-        </div>
-
-        {/* Navigation Items */}
-        <nav className="flex-1 p-4 space-y-2">
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              className={`flex items-center gap-3 w-full p-3 rounded-lg ${activePage === item.label
-                ? 'bg-purple-100 text-purple-600'
-                : 'hover:bg-gray-100 text-gray-600'
-                }`}
-              onClick={() => handleNavItemClick(item.label)}
-            >
-              <item.icon size={20} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        {/* User Account - Bottom */}
-        <div className="p-4 border-t">
-          <button
-            className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-gray-100"
-            onClick={() => handleNavItemClick('Account')}
-          >
-            <User size={20} className="text-gray-600" />
-            <div className="text-left">
-              <p className="font-medium">{user?.name}</p>
-              <p className="text-sm text-gray-500">View Account</p>
-            </div>
-          </button>
-          {/* Logout Button */}
-          <button
-            className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-gray-100"
-            onClick={handleLogout}
-          >
-            <LogOut size={20} className="text-gray-600" />
-            <div className="text-left">
-              <p className="font-medium">Log out</p>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-8 lg:pl-8">{renderPageContent()}</div>
-    </div>
-  );
+  // Return a loading state or null while redirecting
+  return <div className="p-8 text-center">Redirecting...</div>;
 }
 
+export default HomePage;
 
-export default HomePage
+// import React, { useState } from 'react';
+// import { Home, Receipt, CreditCard, User, Menu, X, LogOut } from 'lucide-react';
+// import useUserStore from '../stores/userStore';
+// import HomeContent from '../components/Home';
+// import Bill from '../components/Bill';
+// import Payment from '../components/Payment';
+// import Account from '../components/Account';
+// import { useNavigate } from 'react-router';
+// import BillDetail from '../components/BillDetail';
+
+// function HomePage() {
+//   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+//   const [activePage, setActivePage] = useState('Home');
+//   const user = useUserStore((state) => state.user);
+//   const logout = useUserStore((state) => state.logout);
+//   const navigate = useNavigate();
+//   const navItems = [
+//     { icon: Home, label: 'Home', active: true },
+//     { icon: Receipt, label: 'Bills', active: false },
+//     { icon: Receipt, label: 'BillDetail', active: false},
+//     { icon: CreditCard, label: 'Payments', active: false }
+//   ];
+
+//   const handleNavItemClick = (label) => {
+//     setActivePage(label);
+//   };
+
+//   const renderPageContent = () => {
+//     switch (activePage) {
+//       case 'Home':
+//         return <HomeContent />;
+//       case 'Bills':
+//         return <Bill />;
+//       case 'Payments':
+//         return <Payment />;
+//       case 'Account':
+//         return <Account />;
+//       case 'BillDetail':
+//         return <BillDetail />
+//       default:
+//         return <HomeContent />;
+//     }
+//   };
+
+//   const handleLogout = () => {
+//     logout();
+//     navigate('-1');
+//   };
+
+//   return (
+//     <div className="flex min-h-screen bg-gray-50">
+//       {/* Sidebar Toggle Button for Mobile */}
+//       <button
+//         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
+//         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+//       >
+//         {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+//       </button>
+
+//       {/* Sidebar */}
+//       <div
+//         className={`fixed lg:static inset-y-0 left-0 z-40 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+//           } lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white border-r border-gray-200 flex flex-col`}
+//       >
+//         {/* Logo */}
+//         <div className="p-6 border-b">
+//           <h1 className="text-xl font-bold text-purple-600">SplitZ</h1>
+//         </div>
+
+//         {/* Navigation Items */}
+//         <nav className="flex-1 p-4 space-y-2">
+//           {navItems.map((item) => (
+//             <button
+//               key={item.label}
+//               className={`flex items-center gap-3 w-full p-3 rounded-lg ${activePage === item.label
+//                 ? 'bg-purple-100 text-purple-600'
+//                 : 'hover:bg-gray-100 text-gray-600'
+//                 }`}
+//               onClick={() => handleNavItemClick(item.label)}
+//             >
+//               <item.icon size={20} />
+//               <span>{item.label}</span>
+//             </button>
+//           ))}
+//         </nav>
+
+//         {/* User Account - Bottom */}
+//         <div className="p-4 border-t">
+//           <button
+//             className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-gray-100"
+//             onClick={() => handleNavItemClick('Account')}
+//           >
+//             <User size={20} className="text-gray-600" />
+//             <div className="text-left">
+//               <p className="font-medium">{user?.name}</p>
+//               <p className="text-sm text-gray-500">View Account</p>
+//             </div>
+//           </button>
+//           {/* Logout Button */}
+//           <button
+//             className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-gray-100"
+//             onClick={handleLogout}
+//           >
+//             <LogOut size={20} className="text-gray-600" />
+//             <div className="text-left">
+//               <p className="font-medium">Log out</p>
+//             </div>
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* Main Content */}
+//       <div className="flex-1 p-8 lg:pl-8">{renderPageContent()}</div>
+//     </div>
+//   );
+// }
+
+
+// export default HomePage
 
 
 
