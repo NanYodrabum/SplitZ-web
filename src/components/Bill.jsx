@@ -1,29 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Calculator, Receipt } from 'lucide-react';
+import axios from 'axios';
+import useUserStore from '../stores/userStore';
 
 const Bill = () => {
+  // Get user data and token once and outside of render cycles
+  // Use separate selectors instead of getting the whole store state
+  const user = useUserStore(state => state.user);
+  const token = useUserStore(state => state.token);
+
   // State for bill details
   const [billName, setBillName] = useState('');
   const [billCategory, setBillCategory] = useState('dining');
   const [billDescription, setBillDescription] = useState('');
   const [billDate, setBillDate] = useState(new Date().toISOString().split('T')[0]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   
-  // State for participants
-  const [participants, setParticipants] = useState([
-    { id: 1, name: 'You' }
-  ]);
+  // State for participants - initialize after component mounts
+  const [participants, setParticipants] = useState([]);
   
   // State for bill items
-  const [billItems, setBillItems] = useState([
-    {
-      id: 1,
-      name: '',
-      basePrice: '',
-      taxPercent: 7,
-      serviceChargePercent: 10,
-      splitWith: [1] // Default to first participant (You)
+  const [billItems, setBillItems] = useState([]);
+
+  // Initialize states that depend on user data after component mounts
+  useEffect(() => {
+    // Only set initial participants and bill items once
+    if (participants.length === 0) {
+      setParticipants([
+        { id: 1, name: user?.name || 'You', userId: user?.id }
+      ]);
     }
-  ]);
+    
+    if (billItems.length === 0) {
+      setBillItems([
+        {
+          id: 1,
+          name: '',
+          basePrice: '',
+          taxPercent: 7,
+          serviceChargePercent: 10,
+          splitWith: [1] // Default to first participant (You)
+        }
+      ]);
+    }
+  }, [user]); // Only run once when user data is available
 
   // Add a new participant
   const addParticipant = () => {
@@ -158,6 +180,87 @@ const Bill = () => {
     return Object.values(summary);
   };
 
+  // Form submission handler
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+      setError('');
+      setSuccess('');
+
+      // Validate form
+      if (!billName.trim()) {
+        setError('Bill name is required');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (billItems.some(item => !item.name.trim() || !item.basePrice)) {
+        setError('All bill items must have a name and price');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Calculate tax and service amounts for each item
+      const processedItems = billItems.map(item => {
+        const basePrice = parseFloat(item.basePrice) || 0;
+        const taxAmount = (basePrice * (parseFloat(item.taxPercent) || 0)) / 100;
+        const serviceAmount = (basePrice * (parseFloat(item.serviceChargePercent) || 0)) / 100;
+        const totalAmount = basePrice + taxAmount + serviceAmount;
+
+        return {
+          name: item.name,
+          basePrice,
+          taxPercent: parseFloat(item.taxPercent) || 0,
+          taxAmount,
+          servicePercent: parseFloat(item.serviceChargePercent) || 0,
+          serviceAmount,
+          totalAmount,
+          splitWith: item.splitWith.map(id => {
+            const participant = participants.find(p => p.id === id);
+            return {
+              participantId: id,
+              participantName: participant?.name || `Person ${id}`,
+              userId: participant?.userId || null,
+              shareAmount: totalAmount / item.splitWith.length
+            };
+          })
+        };
+      });
+
+      // Prepare data for API
+      const billData = {
+        name: billName,
+        description: billDescription,
+        category: billCategory,
+        date: billDate,
+        totalAmount: getGrandTotal(),
+        participants: participants.map(p => ({
+          name: p.name,
+          userId: p.userId,
+          isCreator: p.id === 1 // Assuming first participant is creator
+        })),
+        items: processedItems
+      };
+
+      // Send data to backend
+      const response = await axios.post('http://localhost:8800/bills', billData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('Bill created:', response.data);
+      setSuccess('Bill created successfully!');
+
+    } catch (err) {
+      console.error('Error creating bill:', err);
+      setError(err.response?.data?.error || 'Failed to create bill. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-10">
       {/* Header */}
@@ -169,6 +272,20 @@ const Bill = () => {
 
       {/* Main Content */}
       <div className="max-w-5xl mx-auto px-6">
+        {/* Display error if any */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 border border-red-400 rounded-lg text-red-700">
+            {error}
+          </div>
+        )}
+
+        {/* Display success message if any */}
+        {success && (
+          <div className="mb-6 p-4 bg-green-100 border border-green-400 rounded-lg text-green-700">
+            {success}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Bill Form */}
           <div className="lg:col-span-2 space-y-6">
@@ -195,10 +312,9 @@ const Bill = () => {
                   >
                     <option value="dining">Dining</option>
                     <option value="shopping">Shopping</option>
-                    <option value="travel">Travel</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="utilities">Utilities</option>
-                    <option value="other">Other</option>
+                    <option value="traveling">Travel</option>
+                    <option value="hangout">Entertainment</option>
+                    <option value="etc">Other</option>
                   </select>
                 </div>
               </div>
@@ -418,8 +534,12 @@ const Bill = () => {
                 </div>
               </div>
 
-              <button className="w-full bg-blue-600 text-white py-3 rounded-lg mt-6 hover:bg-blue-700">
-                Save Bill
+              <button 
+                className="w-full bg-blue-600 text-white py-3 rounded-lg mt-6 hover:bg-blue-700 disabled:bg-blue-300"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Saving...' : 'Save Bill'}
               </button>
             </div>
 
