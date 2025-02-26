@@ -8,11 +8,13 @@ function Account() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const user = useUserStore((state) => state.user);
   const updateUser = useUserStore((state) => state.updateUser);
+  const deleteUser = useUserStore((state) => state.deleteUser); // Add deleteUser from zustand store
+  const logout = useUserStore((state) => state.logout); // Add logout for after delete
   const navigate = useNavigate();
 
 
   const [formData, setFormData] = useState({
-    name: user.name || '',
+    name: user?.name || '',
     email: user.email || '',
   });
 
@@ -49,8 +51,14 @@ function Account() {
     setShowDeleteConfirm(true);
   };
 
-  const handleConfirmDelete = () => {
-    navigate('/');
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteUser(user.id); 
+      logout(); 
+      navigate('/'); 
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
   };
 
   const handleCancelDelete = () => {
@@ -96,7 +104,7 @@ function Account() {
           <div className="relative">
             <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
               <img
-                src={`https://ui-avatars.com/api/?name=${user.name}&background=random&color=fff`}
+                src={`https://ui-avatars.com/api/?name=${user?.name}&background=random&color=fff`}
                 alt="Profile"
                 className="w-full h-full object-cover rounded-full"
               />
@@ -111,7 +119,7 @@ function Account() {
           </div>
 
           <div className="flex-1">
-            <h2 className="text-xl font-bold mb-2">{user.name}</h2> {/* Use user.name from the store */}
+            <h2 className="text-xl font-bold mb-2">{user?.name}</h2> {/* Use user.name from the store */}
             <div className="flex items-center gap-1 text-gray-600 mb-1">
               <Mail size={16} />
               <span>{user.email}</span>

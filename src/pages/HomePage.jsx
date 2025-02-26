@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
-import {Home, Receipt, CreditCard, User, Menu, X} from 'lucide-react';
+import React, { useState } from 'react';
+import { Home, Receipt, CreditCard, User, Menu, X, LogOut } from 'lucide-react';
 import useUserStore from '../stores/userStore';
-import HomeContent from "../components/Home"
+import HomeContent from '../components/Home';
 import Bill from '../components/Bill';
 import Payment from '../components/Payment';
 import Account from '../components/Account';
+import { useNavigate } from 'react-router';
 
 function HomePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activePage, setActivePage] = useState('Home');
-  const user = useUserStore(state=> state.user)
-
+  const user = useUserStore((state) => state.user);
+  const logout = useUserStore((state) => state.logout);
+  const navigate = useNavigate();
   const navItems = [
     { icon: Home, label: 'Home', active: true },
     { icon: Receipt, label: 'Bills', active: false },
@@ -24,16 +26,21 @@ function HomePage() {
   const renderPageContent = () => {
     switch (activePage) {
       case 'Home':
-        return <HomeContent  />; 
+        return <HomeContent />;
       case 'Bills':
         return <Bill />;
       case 'Payments':
         return <Payment />;
       case 'Account':
-        return <Account/>;
+        return <Account />;
       default:
         return <HomeContent />;
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
@@ -48,9 +55,8 @@ function HomePage() {
 
       {/* Sidebar */}
       <div
-        className={`fixed lg:static inset-y-0 left-0 z-40 transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white border-r border-gray-200 flex flex-col`}
+        className={`fixed lg:static inset-y-0 left-0 z-40 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white border-r border-gray-200 flex flex-col`}
       >
         {/* Logo */}
         <div className="p-6 border-b">
@@ -62,11 +68,10 @@ function HomePage() {
           {navItems.map((item) => (
             <button
               key={item.label}
-              className={`flex items-center gap-3 w-full p-3 rounded-lg ${
-                activePage === item.label
-                  ? 'bg-purple-100 text-purple-600'
-                  : 'hover:bg-gray-100 text-gray-600'
-              }`}
+              className={`flex items-center gap-3 w-full p-3 rounded-lg ${activePage === item.label
+                ? 'bg-purple-100 text-purple-600'
+                : 'hover:bg-gray-100 text-gray-600'
+                }`}
               onClick={() => handleNavItemClick(item.label)}
             >
               <item.icon size={20} />
@@ -83,8 +88,18 @@ function HomePage() {
           >
             <User size={20} className="text-gray-600" />
             <div className="text-left">
-              <p className="font-medium">{user.name}</p>
+              <p className="font-medium">{user?.name}</p>
               <p className="text-sm text-gray-500">View Account</p>
+            </div>
+          </button>
+          {/* Logout Button */}
+          <button
+            className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-gray-100"
+            onClick={handleLogout}
+          >
+            <LogOut size={20} className="text-gray-600" />
+            <div className="text-left">
+              <p className="font-medium">Log out</p>
             </div>
           </button>
         </div>
