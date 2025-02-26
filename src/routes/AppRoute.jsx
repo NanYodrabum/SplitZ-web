@@ -9,6 +9,7 @@ import Account from '../components/Account';
 import LandingPage from "../pages/LandingPage";
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/Register';
+import BillList from '../components/Billlist';
 
 function AppRoute() {
   return (
@@ -21,7 +22,8 @@ function AppRoute() {
       <Route path="/dashboard" element={<Layout />}>
         <Route index element={<HomeContent />} />
         <Route path="bills" element={<Bill />} />
-        <Route path="billdetail" element={<BillDetail />} />
+        <Route path="billlist" element={<BillList/>} />
+        <Route path="bill-detail/:billId" element={<BillDetail />} />
         <Route path="payments" element={<Payment />} />
         <Route path="account" element={<Account />} />
       </Route>

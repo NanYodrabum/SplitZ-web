@@ -12,31 +12,102 @@ function BillDetail() {
   const navigate = useNavigate();
   const { token, user } = useUserStore();
 
+  // Define your API base URL - store this in an environment variable in a real application
+  const API_BASE_URL = 'http://localhost:8800';
+
   useEffect(() => {
     const fetchBillDetails = async () => {
       try {
         setLoading(true);
-        // This would be replaced with an actual API call
-        const response = await axios.get(`http://localhost:8800/bills/${billId}`, {
+        
+        // Check if billId is defined before making the request
+        if (!billId) {
+          throw new Error('Bill ID is missing');
+        }
+        
+        // Get the bill details
+        const billResponse = await axios.get(`${API_BASE_URL}/bills/${billId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        // For demonstration purposes, we'll use mock data
-        // In a real application, you would uncomment the axios call and use the response data
+        if (!billResponse.data) {
+          throw new Error('No bill data received');
+        }
         
-        setBill(response);
+        const billData = billResponse.data;
+        
+        // Get the bill items
+        const itemsResponse = await Promise.all(
+          billData.itemIds.map(itemId => 
+            axios.get(`${API_BASE_URL}/items/${itemId}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
+          )
+        );
+        
+        // Extract items data
+        const itemsData = itemsResponse.map(response => response.data);
+        
+        // Get share items for each item
+        const itemsWithShares = await Promise.all(
+          itemsData.map(async (item) => {
+            const shareResponse = await axios.get(`${API_BASE_URL}/share-items/${item.id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            return {
+              ...item,
+              splits: shareResponse.data || []
+            };
+          })
+        );
+        
+        // Construct the complete bill object
+        const completeBill = {
+          ...billData,
+          items: itemsWithShares
+        };
+        
+        setBill(completeBill);
         setLoading(false);
       } catch (err) {
-        setError('Failed to load bill details. Please try again.');
+        console.error('Error fetching bill details:', err);
+        setError(err.response?.data?.message || 'Failed to load bill details. Please try again.');
         setLoading(false);
       }
     };
 
-    fetchBillDetails();
-  }, [billId, token]);
+    if (billId && token) {
+      fetchBillDetails();
+    } else if (!billId) {
+      setError('Bill ID is missing. Please select a valid bill.');
+      setLoading(false);
+    }
+  }, [billId, token, API_BASE_URL]);
+
+
+  // Function to handle bill deletion
+  const handleDeleteBill = async () => {
+    if (window.confirm('Are you sure you want to delete this bill?')) {
+      try {
+        await axios.delete(`${API_BASE_URL}/bills/${billId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        navigate('/dashboard');
+      } catch (err) {
+        console.error('Error deleting bill:', err);
+        setError(err.response?.data?.message || 'Failed to delete the bill. Please try again.');
+      }
+    }
+  };
+
+  // Function to handle bill editing
+  const handleEditBill = () => {
+    navigate(`/edit-bill/${billId}`);
+  };
 
   const handleGoBack = () => {
-    navigate("/");
+    navigate("/dashboard");
   };
 
   const calculateParticipantOwes = (participantId) => {
@@ -153,6 +224,24 @@ function BillDetail() {
             <p className="text-3xl font-bold">${bill.totalAmount.toFixed(2)}</p>
           </div>
         </div>
+
+        {/* Action buttons */}
+        {bill.creator.id === user.id && (
+          <div className="flex gap-3 mt-4 justify-end">
+            <button
+              onClick={handleEditBill}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            >
+              Edit Bill
+            </button>
+            <button
+              onClick={handleDeleteBill}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg"
+            >
+              Delete Bill
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Participants and Summary */}
