@@ -17,10 +17,10 @@ const Bill = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   // State for participants - initialize after component mounts
   const [participants, setParticipants] = useState([]);
-  
+
   // State for bill items
   const [billItems, setBillItems] = useState([]);
 
@@ -32,7 +32,7 @@ const Bill = () => {
         { id: 1, name: user?.name || 'You', userId: user?.id }
       ]);
     }
-    
+
     if (billItems.length === 0) {
       setBillItems([
         {
@@ -49,10 +49,10 @@ const Bill = () => {
 
   // Add a new participant
   const addParticipant = () => {
-    const newId = participants.length > 0 
-      ? Math.max(...participants.map(p => p.id)) + 1 
+    const newId = participants.length > 0
+      ? Math.max(...participants.map(p => p.id)) + 1
       : 1;
-    
+
     setParticipants([
       ...participants,
       { id: newId, name: '' }
@@ -63,9 +63,9 @@ const Bill = () => {
   const removeParticipant = (id) => {
     // Don't allow removing all participants
     if (participants.length <= 1) return;
-    
+
     setParticipants(participants.filter(p => p.id !== id));
-    
+
     // Also remove this participant from all bill item splits
     setBillItems(billItems.map(item => ({
       ...item,
@@ -75,17 +75,17 @@ const Bill = () => {
 
   // Update participant name
   const updateParticipantName = (id, name) => {
-    setParticipants(participants.map(p => 
+    setParticipants(participants.map(p =>
       p.id === id ? { ...p, name } : p
     ));
   };
 
   // Add a new bill item
   const addBillItem = () => {
-    const newId = billItems.length > 0 
-      ? Math.max(...billItems.map(item => item.id)) + 1 
+    const newId = billItems.length > 0
+      ? Math.max(...billItems.map(item => item.id)) + 1
       : 1;
-    
+
     setBillItems([
       ...billItems,
       {
@@ -103,13 +103,13 @@ const Bill = () => {
   const removeBillItem = (id) => {
     // Don't allow removing all items
     if (billItems.length <= 1) return;
-    
+
     setBillItems(billItems.filter(item => item.id !== id));
   };
 
   // Update bill item field
   const updateBillItem = (id, field, value) => {
-    setBillItems(billItems.map(item => 
+    setBillItems(billItems.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
   };
@@ -118,16 +118,16 @@ const Bill = () => {
   const toggleParticipantInSplit = (itemId, participantId) => {
     setBillItems(billItems.map(item => {
       if (item.id !== itemId) return item;
-      
+
       const newSplitWith = item.splitWith.includes(participantId)
         ? item.splitWith.filter(id => id !== participantId)
         : [...item.splitWith, participantId];
-      
+
       // Don't allow empty splits
       if (newSplitWith.length === 0) {
         return item;
       }
-      
+
       return {
         ...item,
         splitWith: newSplitWith
@@ -157,7 +157,7 @@ const Bill = () => {
   // Calculate summary of what each participant owes
   const getParticipantSummary = () => {
     const summary = {};
-    
+
     // Initialize summary with zero for each participant
     participants.forEach(participant => {
       summary[participant.id] = {
@@ -165,18 +165,18 @@ const Bill = () => {
         amount: 0
       };
     });
-    
+
     // Add up each participant's share from all items
     billItems.forEach(item => {
       const amountPerPerson = getAmountPerParticipant(item);
-      
+
       item.splitWith.forEach(participantId => {
         if (summary[participantId]) {
           summary[participantId].amount += amountPerPerson;
         }
       });
     });
-    
+
     return Object.values(summary);
   };
 
@@ -253,6 +253,20 @@ const Bill = () => {
       console.log('Bill created:', response.data);
       setSuccess('Bill created successfully!');
 
+      setBillName('');
+      setBillDescription('');
+      setBillCategory('dining');
+      setBillDate(new Date().toISOString().split('T')[0]);
+      setParticipants([{ id: 1, name: user?.name || 'You', userId: user?.id }]);
+      setBillItems([{
+        id: 1,
+        name: '',
+        basePrice: '',
+        taxPercent: 7,
+        serviceChargePercent: 10,
+        splitWith: [1]
+      }]);
+
     } catch (err) {
       console.error('Error creating bill:', err);
       setError(err.response?.data?.error || 'Failed to create bill. Please try again.');
@@ -295,7 +309,7 @@ const Bill = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Bill Name</label>
-                  <input 
+                  <input
                     type="text"
                     placeholder="e.g., Dinner with friends"
                     className="w-full p-3 border rounded-lg"
@@ -318,7 +332,7 @@ const Bill = () => {
                   </select>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Description</label>
@@ -332,7 +346,7 @@ const Bill = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Date</label>
-                  <input 
+                  <input
                     type="date"
                     className="w-full p-3 border rounded-lg"
                     value={billDate}
@@ -345,7 +359,7 @@ const Bill = () => {
             {/* Participants */}
             <div className="bg-white rounded-xl border p-6">
               <h2 className="text-lg font-semibold mb-4">Participants</h2>
-              
+
               <div className="space-y-3 mb-4">
                 {participants.map((participant) => (
                   <div key={participant.id} className="flex items-center gap-2">
@@ -356,7 +370,7 @@ const Bill = () => {
                       value={participant.name}
                       onChange={(e) => updateParticipantName(participant.id, e.target.value)}
                     />
-                    <button 
+                    <button
                       className="text-red-500 hover:text-red-700 p-2"
                       onClick={() => removeParticipant(participant.id)}
                       disabled={participants.length <= 1}
@@ -366,8 +380,8 @@ const Bill = () => {
                   </div>
                 ))}
               </div>
-              
-              <button 
+
+              <button
                 className="text-blue-600 flex items-center gap-1"
                 onClick={addParticipant}
               >
@@ -378,12 +392,12 @@ const Bill = () => {
             {/* Bill Items */}
             <div className="space-y-4">
               <h2 className="text-lg font-semibold px-1">Bill Items</h2>
-              
+
               {billItems.map((item) => (
                 <div key={item.id} className="bg-white rounded-xl border p-6">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="font-medium">Item {item.id}</h3>
-                    <button 
+                    <button
                       className="text-red-500 hover:text-red-700"
                       onClick={() => removeBillItem(item.id)}
                       disabled={billItems.length <= 1}
@@ -397,7 +411,7 @@ const Bill = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium mb-2">Item Name</label>
-                        <input 
+                        <input
                           type="text"
                           placeholder="What did you buy?"
                           className="w-full p-3 border rounded-lg"
@@ -407,7 +421,7 @@ const Bill = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-2">Base Price</label>
-                        <input 
+                        <input
                           type="number"
                           placeholder="0.00"
                           className="w-full p-3 border rounded-lg"
@@ -422,7 +436,7 @@ const Bill = () => {
                       <div>
                         <label className="block text-sm font-medium mb-2">Tax (%)</label>
                         <div className="flex items-center gap-2">
-                          <input 
+                          <input
                             type="number"
                             className="w-full p-3 border rounded-lg"
                             value={item.taxPercent}
@@ -436,7 +450,7 @@ const Bill = () => {
                       <div>
                         <label className="block text-sm font-medium mb-2">Service Charge (%)</label>
                         <div className="flex items-center gap-2">
-                          <input 
+                          <input
                             type="number"
                             className="w-full p-3 border rounded-lg"
                             value={item.serviceChargePercent}
@@ -457,18 +471,17 @@ const Bill = () => {
                           {participants.map(participant => (
                             <button
                               key={participant.id}
-                              className={`px-3 py-1 rounded-full text-sm ${
-                                item.splitWith.includes(participant.id)
+                              className={`px-3 py-1 rounded-full text-sm ${item.splitWith.includes(participant.id)
                                   ? 'bg-blue-100 text-blue-600'
                                   : 'bg-gray-100 text-gray-600'
-                              }`}
+                                }`}
                               onClick={() => toggleParticipantInSplit(item.id, participant.id)}
                             >
                               {participant.name || `Person ${participant.id}`}
                             </button>
                           ))}
                         </div>
-                        
+
                         {item.splitWith.length > 0 && (
                           <p className="text-sm text-gray-500">
                             ${getAmountPerParticipant(item).toFixed(2)} per person
@@ -488,7 +501,7 @@ const Bill = () => {
                 </div>
               ))}
 
-              <button 
+              <button
                 className="w-full p-4 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-300 hover:text-blue-500 flex items-center justify-center gap-2"
                 onClick={addBillItem}
               >
@@ -505,7 +518,7 @@ const Bill = () => {
                 <Receipt size={20} className="text-blue-600" />
                 <h2 className="text-lg font-semibold">Bill Summary</h2>
               </div>
-              
+
               <div className="space-y-4">
                 {billItems.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
@@ -534,7 +547,7 @@ const Bill = () => {
                 </div>
               </div>
 
-              <button 
+              <button
                 className="w-full bg-blue-600 text-white py-3 rounded-lg mt-6 hover:bg-blue-700 disabled:bg-blue-300"
                 onClick={handleSubmit}
                 disabled={isSubmitting}

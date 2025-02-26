@@ -6,6 +6,7 @@ import Bill from '../components/Bill';
 import Payment from '../components/Payment';
 import Account from '../components/Account';
 import { useNavigate } from 'react-router';
+import BillDetail from '../components/BillDetail';
 
 function HomePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -16,7 +17,8 @@ function HomePage() {
   const navItems = [
     { icon: Home, label: 'Home', active: true },
     { icon: Receipt, label: 'Bills', active: false },
-    { icon: CreditCard, label: 'Payments', active: false },
+    { icon: Receipt, label: 'BillDetail', active: false},
+    { icon: CreditCard, label: 'Payments', active: false }
   ];
 
   const handleNavItemClick = (label) => {
@@ -33,6 +35,8 @@ function HomePage() {
         return <Payment />;
       case 'Account':
         return <Account />;
+      case 'BillDetail':
+        return <BillDetail />
       default:
         return <HomeContent />;
     }
