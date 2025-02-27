@@ -219,7 +219,7 @@ const Bill = () => {
         const basePrice = parseFloat(item.basePrice) || 0;
         const taxPercent = parseFloat(item.taxPercent) || 0;
         const servicePercent = parseFloat(item.serviceChargePercent) || 0;
-        
+
         const taxAmount = Math.round((basePrice * taxPercent) / 100);
         const serviceAmount = Math.round((basePrice * servicePercent) / 100);
         const totalAmount = Math.round(basePrice + taxAmount + serviceAmount);
@@ -232,15 +232,8 @@ const Bill = () => {
           servicePercent,
           serviceAmount,
           totalAmount,
-          splitWith: item.splitWith.map(id => {
-            const participant = participants.find(p => p.id === id);
-            return {
-              participantId: id,
-              participantName: participant?.name || `Person ${id}`,
-              userId: participant?.userId || null,
-              shareAmount: Math.round(totalAmount / item.splitWith.length)
-            };
-          })
+          // Just pass the array of participant IDs
+          splitWith: item.splitWith
         };
       });
 
@@ -252,12 +245,15 @@ const Bill = () => {
         date: billDate,
         totalAmount: getGrandTotal(),
         participants: participants.map(p => ({
-          name: p.name,
-          userId: p.userId,
+          id: p.id, // Frontend ID for mapping
+          name: p.name || `Person ${p.id}`,
+          userId: p.userId, // Can be null for non-registered users
           isCreator: p.id === 1 // Assuming first participant is creator
         })),
         items: processedItems
       };
+
+      console.log('Sending bill data:', JSON.stringify(billData, null, 2));
 
       // Send data to backend
       const response = await axios.post('http://localhost:8800/bills', billData, {
@@ -270,6 +266,7 @@ const Bill = () => {
       console.log('Bill created:', response.data);
       setSuccess('Bill created successfully!');
 
+      // Reset form after successful submission
       setBillName('');
       setBillDescription('');
       setBillCategory('dining');
@@ -291,6 +288,7 @@ const Bill = () => {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50 pb-10">
@@ -350,9 +348,9 @@ const Bill = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <label className="block text-sm font-medium mb-2 w-full">Description</label>
                   <textarea
                     placeholder="Add any notes about this bill"
                     className="w-full p-3 border rounded-lg"
@@ -361,7 +359,7 @@ const Bill = () => {
                     onChange={(e) => setBillDescription(e.target.value)}
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium mb-2">Date</label>
                   <input
                     type="date"
@@ -369,9 +367,9 @@ const Bill = () => {
                     value={billDate}
                     onChange={(e) => setBillDate(e.target.value)}
                   />
-                </div>
+                </div> */}
               </div>
-            </div>
+            {/* </div> */}
 
             {/* Participants */}
             <div className="bg-white rounded-xl border p-6">
@@ -489,8 +487,8 @@ const Bill = () => {
                             <button
                               key={participant.id}
                               className={`px-3 py-1 rounded-full text-sm ${item.splitWith.includes(participant.id)
-                                  ? 'bg-blue-100 text-blue-600'
-                                  : 'bg-gray-100 text-gray-600'
+                                ? 'bg-blue-100 text-blue-600'
+                                : 'bg-gray-100 text-gray-600'
                                 }`}
                               onClick={() => toggleParticipantInSplit(item.id, participant.id)}
                             >

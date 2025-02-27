@@ -14,7 +14,6 @@ function Layout() {
   const navItems = [
     { icon: Home, label: 'Home', path: '/dashboard' },
     { icon: Receipt, label: 'Bills', path: '/dashboard/bills' },
-    { icon: Receipt, label: 'Bill Detail', path: '/dashboard/bills/:id' },
     { icon: Receipt, label: 'Bill list', path: '/dashboard/billlist' },
     { icon: CreditCard, label: 'Payments', path: '/dashboard/payments' }
   ];

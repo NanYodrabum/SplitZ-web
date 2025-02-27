@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
-import { Receipt, User, Plus, Search, ArrowLeftRight, Tag, Clock, DollarSign } from 'lucide-react';
+import { Receipt, User, Plus, Search, ArrowLeftRight, Tag, Clock, DollarSign, Trash2, Edit } from 'lucide-react';
 import useUserStore from '../stores/userStore';
 
 function BillList() {
@@ -9,42 +9,51 @@ function BillList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [deleteConfirmation, setDeleteConfirmation] = useState(null); // Store bill ID to delete
   const navigate = useNavigate();
   const { token, user } = useUserStore();
 
   // Define your API base URL - store this in an environment variable in a real application
   const API_BASE_URL = 'http://localhost:8800';
 
-  useEffect(() => {
-    const fetchBills = async () => {
-      try {
-        setLoading(true);
-        
-        const response = await axios.get(`${API_BASE_URL}/bills`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        if (response.data && response.data.data) {
-          setBills(response.data.data);
-        } else {
-          throw new Error('No bills data received');
-        }
-        
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching bills:', err);
-        setError(err.response?.data?.message || 'Failed to load bills. Please try again.');
-        setLoading(false);
+  const fetchBills = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      
+      const response = await axios.get(`${API_BASE_URL}/bills`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data && response.data.data) {
+        setBills(response.data.data);
+      } else {
+        throw new Error('No bills data received');
       }
-    };
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching bills:', err);
+      setError(err.response?.data?.message || 'Failed to load bills. Please try again.');
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (token) {
       fetchBills();
     }
-  }, [token, API_BASE_URL]);
+  }, [token]);
 
   const handleBillClick = (billId) => {
-    navigate(`/dashboard/bills/${billId}`); // Updated navigation path
+    // Ensure billId is a valid number
+    if (billId === undefined || billId === null) {
+      console.error("Invalid bill ID:", billId);
+      return;
+    }
+    
+    console.log("Navigating to bill detail with ID:", billId);
+    navigate(`/dashboard/bills/${billId}`);
   };
 
   const handleCreateBill = () => {
@@ -53,24 +62,23 @@ function BillList() {
 
   const handleEditBill = (e, billId) => {
     e.stopPropagation(); // Prevent triggering the parent onClick
-    navigate(`/edit-bill/${billId}`);
+    navigate(`/dashboard/bills/edit/${billId}`);
   };
 
-  const handleDeleteBill = async (e, billId) => {
-    e.stopPropagation(); // Prevent triggering the parent onClick
-    
-    if (window.confirm('Are you sure you want to delete this bill?')) {
-      try {
-        await axios.delete(`${API_BASE_URL}/bills/${billId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        // Update local state after successful deletion
-        setBills(prevBills => prevBills.filter(bill => bill.id !== billId));
-      } catch (err) {
-        console.error('Error deleting bill:', err);
-        setError(err.response?.data?.message || 'Failed to delete the bill. Please try again.');
-      }
+  const handleDeleteBill = async (billId) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/bills/${billId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Show success message (you could add a toast notification here)
+      setDeleteConfirmation(null);
+      
+      // Refresh the bill list
+      fetchBills();
+    } catch (err) {
+      console.error('Error deleting bill:', err);
+      setError(err.response?.data?.error || 'Failed to delete the bill. Please try again.');
     }
   };
 
@@ -118,17 +126,47 @@ function BillList() {
       <div className="p-6 bg-red-50 rounded-lg border border-red-200 text-center">
         <h2 className="text-xl font-semibold text-red-600 mb-2">Error</h2>
         <p className="text-red-600">{error}</p>
+        <button 
+          onClick={fetchBills}
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+        >
+          Try Again
+        </button>
       </div>
     );
   }
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation !== null && (
+        <div className="fixed inset-0 bg-slate-300 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">Delete Bill</h3>
+            <p className="mb-6">Are you sure you want to delete this bill? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirmation(null)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeleteBill(deleteConfirmation)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">My Bills</h1>
         <button
           onClick={handleCreateBill}
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg flex items-center gap-2"
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg flex items-center gap-2 hover:bg-purple-700"
         >
           <Plus size={16} />
           <span>Create New Bill</span>
@@ -164,11 +202,10 @@ function BillList() {
           {filteredBills.map((bill) => (
             <div
               key={bill.id}
-              onClick={() => handleBillClick(bill.id)}
-              className="bg-white rounded-xl border p-4 cursor-pointer hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl border p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex justify-between items-start">
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 cursor-pointer" onClick={() => handleBillClick(bill.id)}>
                   <div className="p-2 bg-gray-100 rounded-lg">
                     {getCategoryIcon(bill.category)}
                   </div>
@@ -191,19 +228,28 @@ function BillList() {
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-lg">${bill.totalAmount?.toFixed(2) || '0.00'}</p>
-                  {bill.creator?.id === user.id && (
+                  
+                  {/* Check if user is creator or not */}
+                  {(bill.creator?.id === user.id || bill.userId === user.id) && (
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={(e) => handleEditBill(e, bill.id)}
-                        className="p-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                        className="flex items-center gap-1 p-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                        title="Edit Bill"
                       >
-                        Edit
+                        <Edit size={14} />
+                        <span>Edit</span>
                       </button>
                       <button
-                        onClick={(e) => handleDeleteBill(e, bill.id)}
-                        className="p-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteConfirmation(bill.id);
+                        }}
+                        className="flex items-center gap-1 p-2 bg-red-100 text-red-700 rounded hover:bg-red-200"
+                        title="Delete Bill"
                       >
-                        Delete
+                        <Trash2 size={14} />
+                        <span>Delete</span>
                       </button>
                     </div>
                   )}

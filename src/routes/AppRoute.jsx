@@ -10,6 +10,7 @@ import LandingPage from "../pages/LandingPage";
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/Register';
 import BillList from '../components/Billlist';
+import BillEdit from '../components/BillEdit';
 
 function AppRoute() {
   return (
@@ -24,6 +25,7 @@ function AppRoute() {
         <Route path="bills" element={<Bill />} />
         <Route path="billlist" element={<BillList/>} />
         <Route path="bills/:id" element={<BillDetail />} />
+        <Route path="bills/edit/:id" element={<BillEdit />} /> {/* Add bill edit route */}
         <Route path="payments" element={<Payment />} />
         <Route path="account" element={<Account />} />
       </Route>
