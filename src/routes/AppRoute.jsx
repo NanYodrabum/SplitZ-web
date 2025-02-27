@@ -23,7 +23,7 @@ function AppRoute() {
         <Route index element={<HomeContent />} />
         <Route path="bills" element={<Bill />} />
         <Route path="billlist" element={<BillList/>} />
-        <Route path="bill-detail/:billId" element={<BillDetail />} />
+        <Route path="bills/:id" element={<BillDetail />} />
         <Route path="payments" element={<Payment />} />
         <Route path="account" element={<Account />} />
       </Route>

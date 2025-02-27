@@ -44,11 +44,11 @@ function BillList() {
   }, [token, API_BASE_URL]);
 
   const handleBillClick = (billId) => {
-    navigate(`/bill-detail/${billId}`);
+    navigate(`/dashboard/bills/${billId}`); // Updated navigation path
   };
 
   const handleCreateBill = () => {
-    navigate('/create-bill');
+    navigate('/dashboard/bills');
   };
 
   const handleEditBill = (e, billId) => {
