@@ -201,7 +201,7 @@ function BillList() {
         <div className="space-y-4">
           {filteredBills.map((bill) => (
             <div
-              key={bill.id}
+              key={bill?.id}
               className="bg-white rounded-xl border p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex justify-between items-start">
@@ -230,10 +230,10 @@ function BillList() {
                   <p className="font-bold text-lg">${bill.totalAmount?.toFixed(2) || '0.00'}</p>
                   
                   {/* Check if user is creator or not */}
-                  {(bill.creator?.id === user.id || bill.userId === user.id) && (
+                  {(bill.creator?.id === user?.id || bill.userId === user?.id) && (
                     <div className="flex gap-2 mt-2">
                       <button
-                        onClick={(e) => handleEditBill(e, bill.id)}
+                        onClick={(e) => handleEditBill(e, bill?.id)}
                         className="flex items-center gap-1 p-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
                         title="Edit Bill"
                       >
