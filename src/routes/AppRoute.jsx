@@ -24,8 +24,9 @@ function AppRoute() {
         <Route index element={<HomeContent />} />
         <Route path="bills" element={<Bill />} />
         <Route path="billlist" element={<BillList/>} />
+        {/* Make sure more specific route comes first */}
+        <Route path="bills/edit/:id" element={<BillEdit />} />
         <Route path="bills/:id" element={<BillDetail />} />
-        <Route path="bills/edit/:id" element={<BillEdit />} /> {/* Add bill edit route */}
         <Route path="payments" element={<Payment />} />
         <Route path="account" element={<Account />} />
       </Route>
