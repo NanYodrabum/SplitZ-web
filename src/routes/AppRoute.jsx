@@ -11,6 +11,7 @@ import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/Register';
 import BillList from '../components/Billlist';
 import BillEdit from '../components/BillEdit';
+import ProtectRoute from './ProtectRoute';
 
 function AppRoute() {
   return (
@@ -20,7 +21,7 @@ function AppRoute() {
       <Route path="/register" element={<RegisterPage />} />
       
       {/* Layout with nested routes for authenticated pages */}
-      <Route path="/dashboard" element={<Layout />}>
+      <Route path="/dashboard" element={<ProtectRoute el={<Layout />}/>}>
         <Route index element={<HomeContent />} />
         <Route path="bills" element={<Bill />} />
         <Route path="billlist" element={<BillList/>} />
@@ -35,3 +36,5 @@ function AppRoute() {
 }
 
 export default AppRoute;
+
+
