@@ -292,7 +292,7 @@ function Home() {
                     onClick={() => handleViewPaymentForBill(activity.billId)}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                         <Clock size={20} className="text-gray-600" />
                       </div>
                       <div>

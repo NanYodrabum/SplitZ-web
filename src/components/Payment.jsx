@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Receipt, User, Clock, ChevronDown, ChevronUp, Check, DollarSign, Tag, ArrowLeftRight } from 'lucide-react';
 import axios from 'axios';
@@ -419,7 +417,7 @@ function Payment() {
                 onClick={() => toggleBillExpansion(bill.id)}
               >
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-gray-100 rounded-lg">
+                  <div className="p-2 bg-purple-100 rounded-lg">
                     {getCategoryIcon(bill.category)}
                   </div>
                   <div>

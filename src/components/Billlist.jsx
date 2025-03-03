@@ -206,7 +206,7 @@ function BillList() {
             >
               <div className="flex justify-between items-start">
                 <div className="flex items-start gap-3 cursor-pointer" onClick={() => handleBillClick(bill.id)}>
-                  <div className="p-2 bg-gray-100 rounded-lg">
+                  <div className="p-2 bg-purple-100 rounded-lg">
                     {getCategoryIcon(bill.category)}
                   </div>
                   <div>
@@ -234,7 +234,7 @@ function BillList() {
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={(e) => handleEditBill(e, bill?.id)}
-                        className="flex items-center gap-1 p-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                        className="flex items-center gap-1 p-2 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200"
                         title="Edit Bill"
                       >
                         <Edit size={14} />
@@ -245,7 +245,7 @@ function BillList() {
                           e.stopPropagation();
                           setDeleteConfirmation(bill.id);
                         }}
-                        className="flex items-center gap-1 p-2 bg-red-100 text-red-700 rounded hover:bg-red-200"
+                        className="flex items-center gap-1 p-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200"
                         title="Delete Bill"
                       >
                         <Trash2 size={14} />

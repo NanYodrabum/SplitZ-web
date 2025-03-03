@@ -362,19 +362,19 @@ function BillDetail() {
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Base Total</span>
                 <span className="font-medium">
-                  ${bill.items?.reduce((sum, item) => sum + (item.basePrice || 0), 0).toFixed(2) || '0.00'}
+                  ${bill.items?.reduce((sum, item) => sum + (item.basePrice || 0), 0) || '0'}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Tax Total</span>
                 <span className="font-medium">
-                  ${bill.items?.reduce((sum, item) => sum + (item.taxAmount || 0), 0).toFixed(2) || '0.00'}
+                  ${bill.items?.reduce((sum, item) => sum + (item.taxAmount || 0), 0) || '0'}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Service Total</span>
                 <span className="font-medium">
-                  ${bill.items?.reduce((sum, item) => sum + (item.serviceAmount || 0), 0).toFixed(2) || '0.00'}
+                  ${bill.items?.reduce((sum, item) => sum + (item.serviceAmount || 0), 0) || '0'}
                 </span>
               </div>
             </div>
@@ -382,11 +382,9 @@ function BillDetail() {
             <div className="pt-4 border-t">
               <div className="flex justify-between font-semibold">
                 <span>Grand Total</span>
-                <span>${bill.totalAmount?.toFixed(2) || '0.00'}</span>
+                <span>${bill.totalAmount || '0'}</span>
               </div>
             </div>
-            
-            {/* Payment Status section removed */}
             
             {/* Custom breakdown section to show total calculations */}
             <div className="mt-4 pt-6 border-t">
