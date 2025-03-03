@@ -50,7 +50,9 @@ function LoginPage() {
       
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1000);
+      }, 500);
+
+      
 
     } catch (err) {
       const errMsg = err.response?.data?.error || err.message;

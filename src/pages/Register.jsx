@@ -51,7 +51,7 @@ function Register() {
       hdlClearInput();
       setShowSuccess(true); // Show success message
       
-      // Wait 2 seconds before redirecting
+      // Wait  before redirecting
       setTimeout(() => {
         navigate('/login');
       }, 1000);
@@ -160,7 +160,7 @@ function Register() {
       </div>
     </div>
   )
-}
+} 
 
 export default Register
 

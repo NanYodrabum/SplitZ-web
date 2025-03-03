@@ -1,29 +1,17 @@
-import { useAuth } from "@clerk/clerk-react";
-import { Link } from "react-router";
-
+import React from 'react';
+import { Navigate } from 'react-router';
+import useUserStore from '../stores/userStore';
 
 const ProtectRoute = ({ el }) => {
-
-  const { isLoaded, isSignedIn } = useAuth();
-  console.log(isSignedIn);
-
-  if (!isLoaded) {
-    return <h1>Loading...</h1>;
+  const token = useUserStore((state) => state.token);
+  
+  // If no token, redirect to login
+  if (!token) {
+    return <Navigate to="/login" />;
   }
-  if (!isSignedIn) {
-    return (
-      <div
-        className="flex w-screen 
-      h-screen items-center justify-center"
-      >
-        <p>
-          Access Denied!!! Go to
-          <Link to="/">Landing Page</Link>
-        </p>
-      </div>
-    );
-  }
-
+  
+  // If token exists, render the protected component
   return el;
 };
+
 export default ProtectRoute;
