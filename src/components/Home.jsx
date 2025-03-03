@@ -201,7 +201,7 @@ function Home() {
           </button>
           <button 
             onClick={handleViewAllBills}
-            className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+            className="flex items-center gap-3 p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
           >
             <Receipt size={24} />
             <span>Manage Bills</span>

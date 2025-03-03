@@ -359,17 +359,7 @@ const Bill = () => {
                     onChange={(e) => setBillDescription(e.target.value)}
                   />
                 </div>
-                {/* <div>
-                  <label className="block text-sm font-medium mb-2">Date</label>
-                  <input
-                    type="date"
-                    className="w-full p-3 border rounded-lg"
-                    value={billDate}
-                    onChange={(e) => setBillDate(e.target.value)}
-                  />
-                </div> */}
               </div>
-            {/* </div> */}
 
             {/* Participants */}
             <div className="bg-white rounded-xl border p-6">
