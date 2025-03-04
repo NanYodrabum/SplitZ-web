@@ -107,11 +107,20 @@ function BillList() {
   };
 
   // Filter bills based on search term
-  const filteredBills = bills.filter(bill => 
-    bill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bill.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bill.category?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
+  // const filteredBills = bills.filter(bill => 
+  //   bill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   bill.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   bill.category?.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  // Filter bills based on search term, then sort by date (newest first)
+  const filteredBills = bills
+    .filter(bill => 
+      bill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bill.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bill.category?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
 
   if (loading) {
     return (

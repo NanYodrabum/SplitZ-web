@@ -33,7 +33,7 @@ function Register() {
         setError("All fields are required");
         return;
       }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$ /.test(input.email)) {
         setError("Invalid email format");
         return;
       }

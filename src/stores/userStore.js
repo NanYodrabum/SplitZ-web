@@ -21,7 +21,7 @@
 //             input,
 //             {
 //               headers: {
-//                 Authorization: `Bearer ${token}`,
+//                 Authorization: `Bearer $ {token}`,
 //               },
 //             }
 //           );
@@ -35,9 +35,9 @@
 //       deleteUser: async (userId) => {
 //         try {
 //           const token = get().token;
-//           await axios.delete(`http://localhost:8800/user/${userId}`, {
+//           await axios.delete(`http://localhost:8800/user/$ {userId}`, {
 //             headers: {
-//               Authorization: `Bearer ${token}`,
+//               Authorization: `Bearer $ {token}`,
 //             },
 //           });
 //         } catch (error) {
@@ -95,7 +95,7 @@ const useUserStore = create(
             input,
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer $ {token}`,
               },
             }
           );
@@ -113,9 +113,9 @@ const useUserStore = create(
           const state = useUserStore.getState(); // Get current state without causing re-renders
           const token = state.token;
           
-          await axios.delete(`http://localhost:8800/user/${userId}`, {
+          await axios.delete(`http://localhost:8800/user/$ {userId}`, {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer $ {token}`,
             },
           });
           // Don't need to update state here as logout will be called after successful deletion

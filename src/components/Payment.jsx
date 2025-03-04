@@ -219,24 +219,27 @@ function Payment() {
     navigate(`/dashboard/bills/${billId}`);
   };
 
-  // Filter bills based on search term - Enhanced to match BillList
-  const filteredBills = bills.filter(bill => {
-    if (!searchTerm) return true;
-    
-    const term = searchTerm.toLowerCase();
-    
-    // Search by name
-    if (bill.name?.toLowerCase().includes(term)) return true;
-    
-    // Search by description
-    if (bill.description?.toLowerCase().includes(term)) return true;
-    
-    // Search by category
-    if (bill.category?.toLowerCase().includes(term)) return true;
-    
-    // No match found
-    return false;
-  });
+  // Filter bills based on search term 
+  const filteredBills = bills
+    .filter(bill => {
+      if (!searchTerm) return true;
+      
+      const term = searchTerm.toLowerCase();
+      
+      // Search by name
+      if (bill.name?.toLowerCase().includes(term)) return true;
+      
+      // Search by description
+      if (bill.description?.toLowerCase().includes(term)) return true;
+      
+      // Search by category
+      if (bill.category?.toLowerCase().includes(term)) return true;
+      
+      // No match found
+      return false;
+    })
+    // Sort bills by date (newest first)
+    .sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
 
   // Format date string
   const formatDate = (dateString) => {

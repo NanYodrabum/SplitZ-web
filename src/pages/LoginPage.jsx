@@ -35,7 +35,7 @@ function LoginPage() {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
         setError("Invalid email format");
         return;
-      }
+    }
       if (input.password.length < 6) {
         setError("Password must be at least 6 characters");
         return;
