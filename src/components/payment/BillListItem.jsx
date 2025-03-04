@@ -16,7 +16,7 @@ function BillListItem({
   onViewBillDetails
 }) {
   return (
-    <div className="border rounded-lg overflow-hidden" id={`bill-${bill.id}`}>
+    <div className="border rounded-xl overflow-hidden" id={`bill-${bill.id}`}>
       {/* Bill Header */}
       <BillItem 
         bill={bill} 

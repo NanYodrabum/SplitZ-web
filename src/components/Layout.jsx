@@ -46,7 +46,7 @@ function Layout() {
       >
         {/* Logo */}
         <div className="p-6 border-b">
-          <h1 className="text-xl font-bold text-purple-600">SplitZ</h1>
+          <h1 className="text-3xl font-bold text-purple-600">SplitZ</h1>
         </div>
 
         {/* Navigation Items */}

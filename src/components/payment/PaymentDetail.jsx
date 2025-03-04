@@ -36,7 +36,8 @@ function PaymentDetail({
   });
 
   return (
-    <div className="border rounded-lg p-4">
+    // No borders at all, just padding and margin
+    <div className="p-3 mb-3 last:mb-0">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className='w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center'>

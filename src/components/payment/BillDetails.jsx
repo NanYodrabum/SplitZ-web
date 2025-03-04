@@ -18,7 +18,7 @@ function BillDetails({
         <h3 className="text-lg font-medium mb-4">Bill Summary</h3>
 
         {bill.paymentSummary?.items && (
-          <div className="space-y-4 mb-4">
+          <div className="space-y-4 mb-6">
             {/* Items Summary */}
             <BillSummary 
               bill={bill} 
@@ -33,34 +33,38 @@ function BillDetails({
           </div>
         )}
     
-        <h3 className="text-lg font-medium mb-4">Payment Details</h3>
+        <div className="mb-6">
+          <h3 className="text-lg font-medium mb-4">Payment Details</h3>
 
-        {bill.paymentSummary ? (
-          <div className="space-y-4 mb-4">
-            {bill.paymentSummary.participants?.map((participant) => {
-              // Skip showing the creator if they are the current user
-              if (participant.isCreator && participant.userId === bill.userId) {
-                return null;
-              }
+          {bill.paymentSummary ? (
+            <div className="bg-white rounded-xl border p-4">
+              <div className="space-y-1">
+                {bill.paymentSummary.participants?.map((participant, index) => {
+                  // Skip showing the creator if they are the current user
+                  if (participant.isCreator && participant.userId === bill.userId) {
+                    return null;
+                  }
 
-              return (
-                <PaymentDetail 
-                  key={participant.id}
-                  participant={participant}
-                  bill={bill}
-                  isProcessing={isProcessing}
-                  updatePaymentStatus={updatePaymentStatus}
-                />
-              );
-            })}
-          </div>
-        ) : (
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <p className="text-gray-600 text-center">Loading payment details...</p>
-          </div>
-        )}
+                  return (
+                    <PaymentDetail 
+                      key={participant.id}
+                      participant={participant}
+                      bill={bill}
+                      isProcessing={isProcessing}
+                      updatePaymentStatus={updatePaymentStatus}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-gray-600 text-center">Loading payment details...</p>
+            </div>
+          )}
+        </div>
 
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end">
           <button
             onClick={onViewBillDetails}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
