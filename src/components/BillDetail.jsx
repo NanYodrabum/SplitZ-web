@@ -271,7 +271,7 @@ function BillDetail() {
     <div className="max-w-5xl mx-auto px-4 py-6">
       {/* Delete Confirmation Modal */}
       {deleteConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-slate-300 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 w-96 max-w-md">
             <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
             <p className="text-gray-600 mb-6">Are you sure you want to delete this bill? This action cannot be undone.</p>
