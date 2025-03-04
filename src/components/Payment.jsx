@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Receipt, User, Clock, ChevronDown, ChevronUp, Check, DollarSign, Tag, ArrowLeftRight, Search } from 'lucide-react';
 import axios from 'axios';
@@ -680,3 +673,7 @@ function Payment() {
 }
 
 export default Payment;
+
+
+
+
