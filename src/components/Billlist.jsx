@@ -236,7 +236,7 @@ function BillList() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-lg">${bill.totalAmount?.toFixed(2) || '0.00'}</p>
+                  <p className="font-bold text-lg">${bill.totalAmount || '0'}</p>
                   
                   {/* Check if user is creator or not */}
                   {(bill.creator?.id === user?.id || bill.userId === user?.id) && (
