@@ -42,7 +42,6 @@ const useUserStore = create(
               },
             }
           );
-          
           // Update only the user part of the state
           set({ user: rs.data.user });
           return rs.data;
