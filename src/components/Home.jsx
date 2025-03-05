@@ -49,9 +49,16 @@ function Home() {
       });
       
       // Process summary data
+      // if (summaryResponse.data) {
+      //   // Store the total amount owed to user
+      //   setOwedToUser(summaryResponse.data.totalOwedToUser || 0);
+      // }
       if (summaryResponse.data) {
         // Store the total amount owed to user
-        setOwedToUser(summaryResponse.data.totalOwedToUser || 0);
+        console.log("Split summary response:", summaryResponse.data);
+        const owed = Number(summaryResponse.data.totalOwedToUser) || 0;
+        console.log("Setting owed amount:", owed);
+        setOwedToUser(owed);
       }
       
       // Process bills data

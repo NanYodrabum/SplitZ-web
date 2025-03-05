@@ -6,7 +6,8 @@ function SummaryCards({ owedToUser, totalBillsCount }) {
       {/* Money Owed to You */}
       <div className="bg-white p-6 rounded-xl border">
         <p className="text-gray-600 mb-2">Money Owed to You</p>
-        <p className="text-2xl font-bold text-green-600">${Math.round(owedToUser || 0)}</p>
+        {/* <p className="text-2xl font-bold text-green-600">${Math.round(owedToUser || 0)}</p> */}
+        <p className="text-2xl font-bold text-green-600">${typeof owedToUser === 'number' ? Math.round(owedToUser) : 0}</p>
         <p className="text-sm text-gray-500 mt-1">
           {owedToUser > 0 ? 'You have pending payments to collect' : 'Everything is settled up'}
         </p>
