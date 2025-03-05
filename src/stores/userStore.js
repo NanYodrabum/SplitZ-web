@@ -70,31 +70,31 @@ const useUserStore = create(
     }),
     {
       name: 'user-storage', // Changed name to avoid conflicts with other storage
-      // storage: {
-      //   getItem: (name) => {
-      //     try {
-      //       const value = localStorage.getItem(name);
-      //       return value ? JSON.parse(value) : null;
-      //     } catch (error) {
-      //       console.error('Error retrieving from localStorage:', error);
-      //       return null;
-      //     }
-      //   },
-      //   setItem: (name, value) => {
-      //     try {
-      //       localStorage.setItem(name, JSON.stringify(value));
-      //     } catch (error) {
-      //       console.error('Error setting localStorage:', error);
-      //     }
-      //   },
-      //   removeItem: (name) => {
-      //     try {
-      //       localStorage.removeItem(name);
-      //     } catch (error) {
-      //       console.error('Error removing from localStorage:', error);
-      //     }
-      //   },
-      // },
+      storage: {
+        getItem: (name) => {
+          try {
+            const value = localStorage.getItem(name);
+            return value ? JSON.parse(value) : null;
+          } catch (error) {
+            console.error('Error retrieving from localStorage:', error);
+            return null;
+          }
+        },
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, JSON.stringify(value));
+          } catch (error) {
+            console.error('Error setting localStorage:', error);
+          }
+        },
+        removeItem: (name) => {
+          try {
+            localStorage.removeItem(name);
+          } catch (error) {
+            console.error('Error removing from localStorage:', error);
+          }
+        },
+      },
     }
   )
 );
