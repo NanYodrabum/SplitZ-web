@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 import useUserStore from '../stores/userStore';
 
 // Import Shared Components
@@ -25,7 +25,7 @@ const Bill = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // State for participants - initialize after component mounts
   const [participants, setParticipants] = useState([]);

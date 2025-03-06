@@ -12,13 +12,14 @@ import RegisterPage from '../pages/Register';
 import BillList from '../components/Billlist';
 import BillEdit from '../components/BillEdit';
 import ProtectRoute from './ProtectRoute';
+import RedirectAuthRoute from './RedirectAuthRoute';
 
 function AppRoute() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/" element={<RedirectAuthRoute element={<LandingPage />} />} />
+      <Route path="/login" element={<RedirectAuthRoute element={<LoginPage />} />} />
+      <Route path="/register" element={<RedirectAuthRoute element={<RegisterPage />} />} />
       
       {/* Layout with nested routes for authenticated pages */}
       <Route path="/dashboard" element={<ProtectRoute el={<Layout />}/>}>

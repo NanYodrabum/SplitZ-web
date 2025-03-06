@@ -4,6 +4,7 @@ import useUserStore from '../stores/userStore';
 
 const ProtectRoute = ({ el }) => {
   const token = useUserStore((state) => state.token);
+  console.log(token);
   
   // If no token, redirect to login
   if (!token) {
